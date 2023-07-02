@@ -1,0 +1,72 @@
+#!/usr/bin/python3
+
+
+import sys
+import random
+import time
+
+
+def is_prime(numb, k=20):
+    '''
+    '''
+    if numb == 2 or numb == 3:
+        return True
+    if numb < 2 or numb % 2 == 0:
+        return False
+
+
+    d = numb - 1
+    r = 0
+    while d % 2 == 0:
+        d //= 2
+        r += 1
+
+
+    for _ in range(k):
+        a = random.randint(2, numb - 2)
+        x = pow(a, d, numb)
+        if x == 1 or x == numb - 1:
+            continue
+        for _ in range(r - 1):
+            x = pow(x, 2, numb)
+            if x == numb - 1:
+                break
+        else:
+            return False
+
+
+    return True
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: rsa <file>")
+        exit()
+
+
+    input_file = sys.argv[1]
+
+
+    try:
+        with open(input_file, 'r') as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        print("File not found")
+        exit()
+
+
+    start_time = time.time()
+
+
+    numb = int(lines[0].strip())
+
+
+    for e in range(2, numb//2):
+        if numb % e == 0 and is_prime(e) and is_prime(numb//e):
+            print(f"{numb}={e}*{numb//e}")
+            break
+
+
+        if time.time() - start_time > 5:
+            print("Time limit exceeded")
+            exit()
